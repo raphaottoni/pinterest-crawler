@@ -34,36 +34,19 @@ class Crawler:
     profile.close()
 
     print "Coletando attributes"
-    #comeca o parse
-    soup = BeautifulSoup(html)
-
-
-    metas = soup.findAll("meta")
-    for meta in metas:
-      if meta.get("property") == "pinterestapp:pins":
-        #print "pins "+ meta.get("content")
-        nPins = meta.get("content").replace(",","")
-      elif meta.get("property") == "pinterestapp:boards":
-        #print "boars" + meta.get("content")
-        nBoards = meta.get("content").replace(",","")
-      elif meta.get("property") == "pinterestapp:following":
-        #print "following" + meta.get("content")
-        nFollowing= meta.get("content").replace(",","")
-      elif meta.get("property") == "pinterestapp:followers":
-        #print "followers" + meta.get("content")
-        nFollower= meta.get("content").replace(",","")
-      elif meta.get("property") == "pinterestapp:followers":
-        #print "followers" + meta.get("content")
-        nFollower= meta.get("content").replace(",","")
+    nPins = re.search('name="pinterestapp:pins" content="(.*)" ',html).group(1).strip()
+    nBoards = re.search('name="pinterestapp:boards" content="(.*)" ',html).group(1).strip()
+    nFollowing= re.search('name="pinterestapp:following" content="(.*)" ',html).group(1).strip()
+    nFollower= re.search('name="pinterestapp:followers" content="(.*)" ',html).group(1).strip()
 
 
 
-    ##escreve atributos
-    #atributos = open(path+"/attributes","w")
-    #header="nBoards;nPins;nFollower;nFollowing\n"
-    #att=""+nBoards+";"+nPins+";"+nFollower+";"+nFollowing
-    #atributos.write(header+smart_str(att))
-    #atributos.close()
+    #escreve atributos
+    atributos = open(path+"/attributes","w")
+    header="nBoards;nPins;nFollower;nFollowing\n"
+    att=""+nBoards+";"+nPins+";"+nFollower+";"+nFollowing
+    atributos.write(header+smart_str(att))
+    atributos.close()
 
     print "Coletando Boards"
     #Salva os boards ----- Primeira pagina so vem os 49! nao 50!!!! OMG
@@ -75,36 +58,36 @@ class Crawler:
     saida = open("raphaottoni","w")
     saida.write(html)
     saida.close()
-    print re.findall('href="(.*)"',html)
 
     for board in boards:
         print board
+        albumLink = board
+        owner = albumLink.split("/")[1]
+        albumName = albumLink.split("/")[2]
+        if not os.path.exists(pathBoards+"/"+albumName): os.makedirs(pathBoards+"/"+albumName)
+        print "http://pinterest.com"+ albumLink
+        htmlBoard = self.pinterest.fetch("http://pinterest.com"+ albumLink)
+        category= re.search('name="pinterestapp:category" content="(.*)" ',htmlBoard).group(1).strip()
+        saida= open("raphaottoni","w")
+        saida.write(htmlBoard)
+        saida.close()
+        followers = re.search('name="followers" content="(.*)" ',htmlBoard).group(1).strip()
+        title = re.search('name="og:title" content="(.*)" ',htmlBoard).group(1).strip()
+        nPins= re.search('name="pinterestapp:pins" content="(.*)" ',htmlBoard).group(1).strip()
 
-    #for link in soup.find(id="ColumnContainer").findAll("h3"):
-    #  if link.findAll("a"):
-    #    albumLink = link.findAll("a")[0].get("href")
-    #    dono = albumLink.split("/")[1]
-    #    albumName = link.findAll("a")[0].get("href").split("/")[2]
-    #    if not os.path.exists(pathBoards+"/"+albumName): os.makedirs(pathBoards+"/"+albumName)
-    #    #print  "url do album" + albumLink
-    #    htmlBoard = self.pinterest.fetch("http://pinterest.com/"+ albumLink)
-    #    soup2= BeautifulSoup(htmlBoard)
-    #    for meta in  soup2.find("head").findAll("meta"):
-    #      if (meta.get("property") == "pinterestapp:category"):
-    #        category= meta.get("content")
-    #      elif (meta.get("property") == "pinterestapp:followers"):
-    #        followers= meta.get("content").replace(",","")
-    #    board = gzip.open(pathBoards+"/"+albumName+"/paginaInicial","w")
-    #    board.write(htmlBoard)
-    #    board.close()
-    #    soupBoard = BeautifulSoup(htmlBoard)
-    #    nPins = soupBoard.find(id="BoardStats").findAll("strong")[-1].text.replace(",","")
+        board = gzip.open(pathBoards+"/"+albumName+"/initialPage","w")
+        board.write(htmlBoard)
+        board.close()
+        #escreve atributos
+        atributos = open(pathBoards+"/"+albumName+"/attributes","w")
+        header="albumLink;owner;albumName;title;nFollowers;nPins;date\n"
+        att=""+albumLink+";"+owner+";"+albumName+";"+title+";"+followers+";"+nPins+";"+str(datetime.now())
+        atributos.write(header+smart_str(att))
+        atributos.close()
 
-    #    #Marca o timestap de comeco da coleta do album
-    #    Date = datetime.now()
-    #    tempo= open(pathBoards+"/"+albumName+"/datetime","w")
-    #    tempo.write(str(Date))
-    #    tempo.close()
+
+
+
 
     #    #talvez tirar esse if, pq nao precisa ser dono do album
     #    if (albumLink.split("/")[1] == pinterestID):

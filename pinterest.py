@@ -26,7 +26,7 @@ class Pinterest:
         #html = con.read()
         #con.close()
 
-        html = os.popen("phantomjs ./tst.js "+url).read()
+        html = os.popen("phantomjs ./pinterest.js "+url).read()
 
         done=1;
       except urllib2.HTTPError, e:
