@@ -26,6 +26,11 @@ var countItens = function(){
 //Collect the page data
 page.open(address, function () {
 
+ //check if it is a html of a board
+ var myReg = new RegExp('<span class="buttonText">Follow Board</span>');
+ isBoardPage= myReg.exec(page.content);
+ if (isBoardPage == null) { return; }
+
  window.setInterval(function() {
      if(nPins > countItens()) {
       // console.log(window.document.body.scrollTop);
@@ -41,3 +46,10 @@ page.open(address, function () {
 
 });
 
+page.onResourceReceived = function(resource) {
+  if(resource.url === address && resource.status != '200') {
+    //console.log('Url: ' + resource.url);
+    console.log('HTML-Error-Code: ' + resource.status);
+    phantom.exit();
+  }
+}

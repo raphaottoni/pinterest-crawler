@@ -40,7 +40,7 @@ class Crawler:
     html = self.pinterest.fetch("http://pinterest.com/"+ pinterestID + "/?d")
 
     if ( html == 1):
-      return 1
+        return
 
     profile.write(html)
     profile.close()

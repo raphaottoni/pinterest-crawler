@@ -47,11 +47,12 @@ while True:
             print "Quer me pegar: %s" % client_id
         elif command == "GET_ID":
             print "Recebi comando GetID"
-            profileId = pinterest.getIDtoCrawl()
+            #profileId = pinterest.getIDtoCrawl()
             #profileId = "raphaottoni"
             #profileId = "gslth"
             #profileId = "mufan2"
-            #profileId = "eatsleepwear"
+            profileId = "eatsleepwear"
+            #profileId = "adiasdoajfaofdof"
             #print profileId
             client.send(json.dumps({"command": "GIVE_ID", "profileID": str(profileId)}))
             client_id = message["clientid"]

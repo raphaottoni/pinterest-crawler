@@ -4,7 +4,7 @@ import random
 import socket
 import MySQLdb
 from config import *
-import os
+import os,re
 
 class Pinterest:
   #------inicializacao -------#
@@ -13,131 +13,50 @@ class Pinterest:
     self.cursor = self.db.cursor()
     self. cursor.connection.autocommit(True)
 
-  def fetchSimple(self,url):
-    done=0
-    while(not done):
-      try:
+  def findError(self,html):
+        erro = re.search("HTML-Error-Code: ([0-9]*)\n",html)
+        if (erro):
+            #print "achei o erro-"+erro.group(1)
+            return erro.group(1)
+        else:
+            return 0
 
-        html = os.popen("phantomjs ./pinterestSimple.js "+url).read()
+  def analyzeAnswer(self,html):
 
-        done=1;
-      except urllib2.HTTPError, e:
-        print (str(e.msg) +"'"+ url+ "' \n")
-        time.sleep(random.randint(1,5))
-        if ( hasattr(e, 'code') and e.code == 404):
-          return 1
-        continue
-      except urllib2.URLError, e:
-        print (str(e.reason[1])+ "'"+ url +"' \n")
-        time.sleep(random.randint(1,5))
-        if ( hasattr(e, 'code') and e.code == 404):
-          return 1
-        continue
-      except socket.timeout:
-        print ("Time out pelo sockect - '"+ url + "' \n")
-        time.sleep(random.randint(1,5))
-        continue
-      except socket.error, e:
-        print ("sockect - '"+ str(e) + "' \n")
-        time.sleep(random.randint(5,15))
-        continue
-      except Exception , e :
-        print ("sockect - '"+ str(e) + "' \n")
-        time.sleep(random.randint(2,6))
-        continue
-    return html
-
-
-
-  def fetchPins(self,url,qtd):
-    done=0
-    while(not done):
-      try:
-
-        html = os.popen("phantomjs ./pinterestPin.js "+url+ " " +qtd).read()
-
-        done=1;
-      except urllib2.HTTPError, e:
-        print (str(e.msg) +"'"+ url+ "' \n")
-        time.sleep(random.randint(1,5))
-        if ( hasattr(e, 'code') and e.code == 404):
-          return 1
-        continue
-      except urllib2.URLError, e:
-        print (str(e.reason[1])+ "'"+ url +"' \n")
-        time.sleep(random.randint(1,5))
-        if ( hasattr(e, 'code') and e.code == 404):
-          return 1
-        continue
-      except socket.timeout:
-        print ("Time out pelo sockect - '"+ url + "' \n")
-        time.sleep(random.randint(1,5))
-        continue
-      except socket.error, e:
-        print ("sockect - '"+ str(e) + "' \n")
-        time.sleep(random.randint(5,15))
-        continue
-      except Exception , e :
-        print ("sockect - '"+ str(e) + "' \n")
-        time.sleep(random.randint(2,6))
-        continue
-    return html
+    code = self.findError(html)
+    if (code != 0):
+        if code == "404":
+            return 1
+        else:
+            time.sleep(random.randint(2,6))
+    return 0
 
   def fetch(self,url):
     done=0
     while(not done):
-      try:
-
-        # Nao funciona mais pq virou tudo javascript!!!!! #
-
-        #req = urllib2.Request(url, headers={'User-Agent' : "M"}) #,"Accept-Encoding": "gzip"})
-        #con = urllib2.urlopen( req )
-        #html = con.read()
-        #con.close()
-
         html = os.popen("phantomjs ./pinterest.js "+url).read()
-
-        done=1;
-      except urllib2.HTTPError, e:
-        #log = open("/var/tmp/rapha/log","a+")
-        #log.write(str(e.msg) +"'"+ url+ "' \n")
-        print (str(e.msg) +"'"+ url+ "' \n")
-        #log.close()
-        time.sleep(random.randint(1,5))
-        if ( hasattr(e, 'code') and e.code == 404):
-          return 1
-        continue
-      except urllib2.URLError, e:
-        #log = open("/var/tmp/rapha/log","a+")
-        #log.write(str(e.reason[1])+ "'"+ url +"' \n")
-        print (str(e.reason[1])+ "'"+ url +"' \n")
-        #log.close()
-        time.sleep(random.randint(1,5))
-        if ( hasattr(e, 'code') and e.code == 404):
-          return 1
-        continue
-      except socket.timeout:
-        #log = open("/var/tmp/rapha/log","a+")
-        #log.write("Time out pelo sockect - '"+ url + "' \n")
-        print ("Time out pelo sockect - '"+ url + "' \n")
-        #log.close()
-        time.sleep(random.randint(1,5))
-        continue
-      except socket.error, e:
-        #log = open("/var/tmp/log","a+")
-        #log.write("sockect - '"+ str(e) + "' \n")
-        print ("sockect - '"+ str(e) + "' \n")
-        #log.close()
-        time.sleep(random.randint(5,15))
-        continue
-      except Exception , e :
-        #log = open("/var/tmp/log","a+")
-        #log.write("sockect - '"+ str(e) + "' \n")
-        print ("sockect - '"+ str(e) + "' \n")
-        #log.close()
-        time.sleep(random.randint(2,6))
-        continue
+        if (self.analyzeAnswer(html) == 0):
+            done=1;
     return html
+
+  def fetchPins(self,url,qtd):
+    done=0
+    while(not done):
+        html = os.popen("phantomjs ./pinterestPin.js "+url+ " " +qtd).read()
+        if (self.analyzeAnswer(html) == 0):
+            done=1;
+    return html
+
+
+  def fetchSimple(self,url):
+    done=0
+    while(not done):
+       print "coletando"
+       html = os.popen("phantomjs ./pinterestSimple.js "+url).read()
+       if (self.analyzeAnswer(html) == 0):
+            done=1;
+    return html
+
 
   def snowBall(self):
           self.cursor.execute("select pinterestID from fatos where statusIDs is null or statusIDs = 0 limit 1")
