@@ -28,23 +28,32 @@ class Pinterest:
         if code == "404":
             return 1
         else:
+            print "dormindo - code " + code
             time.sleep(random.randint(2,6))
-    return 0
+            return 2
+    else:
+        return 0
 
   def fetch(self,url):
     done=0
     while(not done):
         html = os.popen("phantomjs ./pinterest.js "+url).read()
-        if (self.analyzeAnswer(html) == 0):
+        answerCode = self.analyzeAnswer(html)
+        if (answerCode == 0):
             done=1;
+        elif (answerCode == 1):
+            return 1
     return html
 
   def fetchPins(self,url,qtd):
     done=0
     while(not done):
         html = os.popen("phantomjs ./pinterestPin.js "+url+ " " +qtd).read()
-        if (self.analyzeAnswer(html) == 0):
+        answerCode = self.analyzeAnswer(html)
+        if (answerCode == 0):
             done=1;
+        elif (answerCode == 1):
+            return 1
     return html
 
 
@@ -53,8 +62,11 @@ class Pinterest:
     while(not done):
        print "coletando"
        html = os.popen("phantomjs ./pinterestSimple.js "+url).read()
-       if (self.analyzeAnswer(html) == 0):
+       answerCode = self.analyzeAnswer(html)
+       if (answerCode == 0):
             done=1;
+       elif (answerCode == 1):
+            return 1
     return html
 
 

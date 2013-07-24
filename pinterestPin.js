@@ -19,7 +19,9 @@ args.forEach(function(arg, i) {
 // Count how many boards are in the page
 var countItens = function(){
     var count = page.content.match(/\<div class="item " /g);
-    return (count.length);
+
+    if (count){ return (count.length);}
+    return 0
 }
 
 

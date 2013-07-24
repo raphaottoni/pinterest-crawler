@@ -37,7 +37,9 @@ class Crawler:
     profile = gzip.open(path+"/profile","w")
     html = self.pinterest.fetch("http://pinterest.com/"+ pinterestID + "/?d")
 
-    if ( html == 1):
+    print "voltou a resposta"
+    if (html == 1):
+        print "voltando pq deu erro - usuario nao existe"
         return
 
     profile.write(html)

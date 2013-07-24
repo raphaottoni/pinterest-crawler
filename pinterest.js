@@ -15,7 +15,8 @@ args.forEach(function(arg, i) {
 var countItens = function(){
   var count = page.content.match(/\<div class="item "\>/g);
   //console.log(count.length);
-  return (count.length);
+  if (count) { return count.length;} 
+  return 0
 }
 
 //Collect the page data
