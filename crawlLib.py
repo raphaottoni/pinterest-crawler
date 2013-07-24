@@ -4,7 +4,6 @@ import time,random
 import os.path
 import gzip
 from datetime import datetime
-from bs4 import BeautifulSoup
 import re
 from datetime import *
 
