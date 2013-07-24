@@ -5,7 +5,6 @@ import os.path
 import gzip
 from datetime import datetime
 from bs4 import BeautifulSoup
-from django.utils.encoding import smart_str, smart_unicode
 import re
 from datetime import *
 
@@ -57,7 +56,7 @@ class Crawler:
     atributos = open(path+"/attributes","w")
     header="nBoards;nPins;nFollower;nFollowing\n"
     att=""+nBoards+";"+nPins+";"+nFollower+";"+nFollowing
-    atributos.write(header+smart_str(att))
+    atributos.write(header+att)
     atributos.close()
 
     print "Coletando Boards"
@@ -93,7 +92,7 @@ class Crawler:
         saida = open(pathBoards+"/"+albumName+"/attributes","w")
         header="title;category;nPins;nFollower;boardLink\n"
         att=""+title+";"+ category+ ";"+nPinsOnBoard+";"+nFollowersBoard+";"+albumLink
-        saida.write(header+smart_str(att))
+        saida.write(header+att)
         saida.close()
 
         #write the first page of the board
