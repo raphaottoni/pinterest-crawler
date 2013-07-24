@@ -48,11 +48,11 @@ while True:
         elif command == "GET_ID":
             print "Recebi comando GetID"
             profileId = pinterest.getIDtoCrawl()
-            profileId = "raphaottoni"
+            #profileId = "raphaottoni"
             #profileId = "gslth"
             #profileId = "mufan2"
             #profileId = "eatsleepwear"
-            print profileId
+            #print profileId
             client.send(json.dumps({"command": "GIVE_ID", "profileID": str(profileId)}))
             client_id = message["clientid"]
             clients[client_id][2] += 1

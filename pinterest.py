@@ -13,6 +13,75 @@ class Pinterest:
     self.cursor = self.db.cursor()
     self. cursor.connection.autocommit(True)
 
+  def fetchSimple(self,url):
+    done=0
+    while(not done):
+      try:
+
+        html = os.popen("phantomjs ./pinterestSimple.js "+url).read()
+
+        done=1;
+      except urllib2.HTTPError, e:
+        print (str(e.msg) +"'"+ url+ "' \n")
+        time.sleep(random.randint(1,5))
+        if ( hasattr(e, 'code') and e.code == 404):
+          return 1
+        continue
+      except urllib2.URLError, e:
+        print (str(e.reason[1])+ "'"+ url +"' \n")
+        time.sleep(random.randint(1,5))
+        if ( hasattr(e, 'code') and e.code == 404):
+          return 1
+        continue
+      except socket.timeout:
+        print ("Time out pelo sockect - '"+ url + "' \n")
+        time.sleep(random.randint(1,5))
+        continue
+      except socket.error, e:
+        print ("sockect - '"+ str(e) + "' \n")
+        time.sleep(random.randint(5,15))
+        continue
+      except Exception , e :
+        print ("sockect - '"+ str(e) + "' \n")
+        time.sleep(random.randint(2,6))
+        continue
+    return html
+
+
+
+  def fetchPins(self,url,qtd):
+    done=0
+    while(not done):
+      try:
+
+        html = os.popen("phantomjs ./pinterestPin.js "+url+ " " +qtd).read()
+
+        done=1;
+      except urllib2.HTTPError, e:
+        print (str(e.msg) +"'"+ url+ "' \n")
+        time.sleep(random.randint(1,5))
+        if ( hasattr(e, 'code') and e.code == 404):
+          return 1
+        continue
+      except urllib2.URLError, e:
+        print (str(e.reason[1])+ "'"+ url +"' \n")
+        time.sleep(random.randint(1,5))
+        if ( hasattr(e, 'code') and e.code == 404):
+          return 1
+        continue
+      except socket.timeout:
+        print ("Time out pelo sockect - '"+ url + "' \n")
+        time.sleep(random.randint(1,5))
+        continue
+      except socket.error, e:
+        print ("sockect - '"+ str(e) + "' \n")
+        time.sleep(random.randint(5,15))
+        continue
+      except Exception , e :
+        print ("sockect - '"+ str(e) + "' \n")
+        time.sleep(random.randint(2,6))
+        continue
+    return html
 
   def fetch(self,url):
     done=0
@@ -77,8 +146,8 @@ class Pinterest:
   def getIDtoCrawl(self):
           self.cursor.execute("select pinterestID from usersToCollect where statusColeta is null or statusColeta = 0 limit 1")
           self.db.commit()
-          #return self.cursor.fetchone()[0]
-          return "raphaottoni"
+          return self.cursor.fetchone()[0]
+          #return "raphaottoni"
 
 
   def insereID(self,pinterestID):

@@ -35,3 +35,4 @@ nosetests.xml
 .pydevproject
 config.py
 profiles
+database/pinterest.sql
