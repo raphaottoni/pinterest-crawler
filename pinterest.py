@@ -29,7 +29,7 @@ class Pinterest:
             return 1
         else:
             print "dormindo - code " + code
-            time.sleep(random.randint(2,6))
+            time.sleep(random.randint(0,2))
             return 2
     else:
         return 0
