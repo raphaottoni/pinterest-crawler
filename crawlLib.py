@@ -108,7 +108,10 @@ class Crawler:
 
           #crawl until find some content not generated today
           while(coleta):
-              pins = re.findall('<a href="(.*)" class="pinImageWrapper "',htmlBoard)
+
+              #mudou html denovo
+              #pins = re.findall('<a href="(.*)" class="pinImageWrapper "',htmlBoard)
+              pins = re.findall('<a href="(.*)" class="pinImageWrapper',htmlBoard)
               for pin in pins:
 
                  if not (pin in pinsRead):

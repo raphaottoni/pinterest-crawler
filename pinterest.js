@@ -19,6 +19,13 @@ var countItens = function(){
   return 0
 }
 
+//set timeout 
+window.setTimeout(function () {
+                console.log('HTML-Error-Code: ' + "666");
+                phantom.exit();
+            }, 60000);
+
+
 //Collect the page data
 page.open(address, function (resource) {
 

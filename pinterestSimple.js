@@ -11,6 +11,13 @@ args.forEach(function(arg, i) {
   }
 });
 
+
+//set timeout 
+window.setTimeout(function () {
+                console.log('HTML-Error-Code: ' + "666");
+                phantom.exit();
+            }, 10000);
+
 //Collect the page data
 page.open(address, function (resource) {
 
