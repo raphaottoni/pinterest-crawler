@@ -18,6 +18,11 @@ window.setTimeout(function () {
                 phantom.exit();
             }, 10000);
 
+//only accept english
+page.customHeaders = {
+    'Accept-Language': 'en-US',
+};
+
 //Collect the page data
 page.open(address, function (resource) {
 

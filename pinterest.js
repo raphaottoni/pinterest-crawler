@@ -26,6 +26,11 @@ window.setTimeout(function () {
             }, 60000);
 
 
+//only accept english
+page.customHeaders = {
+    'Accept-Language': 'en-US',
+};
+
 //Collect the page data
 page.open(address, function (resource) {
 
