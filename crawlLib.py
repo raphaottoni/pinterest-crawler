@@ -140,14 +140,14 @@ class Crawler:
 
 
 
-                  if (coleta != 0 ):
-                      if int(nPinsOnBoard) > len(pinsRead):
+                  if (coleta != 0):
+                      if ( (int(nPinsOnBoard) > len(pinsRead)) and (len(pinsRead)%25 ==0)):
                          remaning = int(nPinsOnBoard) - len(pinsRead)
                          if (remaning >= 25 ):
                              nRequest = len(pinsRead) + 25
                          else:
                              nRequest = len(pinsRead) + remaning
-                         #print "Pedindo mais " + str(nRequest)
+                         print "Pedindo mais " + str(nRequest)
                          htmlBoard = self.pinterest.fetchPins("http://pinterest.com"+ albumLink, str(nRequest) )
                       else:
                           break

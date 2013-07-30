@@ -41,7 +41,8 @@ page.open(address, function () {
  if (isBoardPage == null) { return; }
 
  window.setInterval(function() {
-     if(nPins > countItens()) {
+     itens = countItens();
+     if(nPins > itens  && itens % 25 == 0) {
       // console.log(window.document.body.scrollTop);
        page.evaluate(function() {
          window.document.body.scrollTop = document.body.scrollHeight;
