@@ -29,6 +29,10 @@ class Crawler:
             time = now - timedelta(hours=tempo)
     return time
 
+  def validBoardName(self,name):
+        invalidNames = set (["likes","followers","following","boards","pins"])
+        if ( name in invalidNames ): return 0
+        return 1
 
   def gatherInfo(self,pinterestID):
     print "iniciei parse de " +pinterestID
@@ -76,77 +80,79 @@ class Crawler:
         if not os.path.exists(pathBoards+"/"+albumName): os.makedirs(pathBoards+"/"+albumName)
         print "http://pinterest.com"+ albumLink
 
-
-        #cralw the first pin page of the boad (25 items at most)
-        htmlBoard = self.pinterest.fetchPins("http://pinterest.com"+ albumLink, "0")
-
-
-        # check if it is a shared board
-        if not (re.search('class="inline BoardCollaborators Module"',htmlBoard)):
-          nPinsOnBoard = re.search('name="pinterestapp:pins" content="(.*)" ',htmlBoard).group(1).strip()
-          title = re.search('name="og:title" content="(.*)" ',htmlBoard).group(1).strip()
-          nFollowersBoard= re.search('name="followers" content="(.*)" ',htmlBoard).group(1).strip()
-          category= re.search('name="pinterestapp:category" content="(.*)" ',htmlBoard).group(1).strip()
-          pinsRead = set ()
-          coleta =1
-          info = open(pathBoards+"/"+albumName+"/timeline","a")
-          print nPinsOnBoard
+        #check if it is a valid board name
+        if (self.validBoardName(albumName)):
+            #cralw the first pin page of the boad (25 items at most)
+            htmlBoard = self.pinterest.fetchPins("http://pinterest.com"+ albumLink, "0")
 
 
-          #write metainfo of the board
-          saida = open(pathBoards+"/"+albumName+"/attributes","w")
-          header="title;category;nPins;nFollower;boardLink\n"
-          att=""+title+";"+ category+ ";"+nPinsOnBoard+";"+nFollowersBoard+";"+albumLink
-          saida.write(header+att)
-          saida.close()
+            # check if it is a shared board
+            if not (re.search('class="inline BoardCollaborators Module"',htmlBoard)):
+              nPinsOnBoard = re.search('name="pinterestapp:pins" content="(.*)" ',htmlBoard).group(1).strip()
+              title = re.search('name="og:title" content="(.*)" ',htmlBoard).group(1).strip()
+              nFollowersBoard= re.search('name="followers" content="(.*)" ',htmlBoard).group(1).strip()
+              category= re.search('name="pinterestapp:category" content="(.*)" ',htmlBoard).group(1).strip()
+              pinsRead = set ()
+              coleta =1
 
-          #write the first page of the board
-          saida = gzip.open(pathBoards+"/"+albumName+"/firstPage","w")
-          saida.write(htmlBoard)
-          saida.close()
-
-
-          #crawl until find some content not generated today
-          while(coleta):
-
-              #mudou html denovo
-              #pins = re.findall('<a href="(.*)" class="pinImageWrapper "',htmlBoard)
-              pins = re.findall('<a href="(.*)" class="pinImageWrapper',htmlBoard)
-              for pin in pins:
-
-                 if not (pin in pinsRead):
-                    htmlPin  = self.pinterest.fetchSimple("http://pinterest.com"+ pin)
-                    timeAgo = re.search('class="commentDescriptionTimeAgo">(.*)</span>',htmlPin)
-                    timeCreate= self.findTime(timeAgo.group(1))
-                    if ( timeCreate  == -1):
-                        coleta = 0
-                        break
-                    pinsRead.add(pin)
-                    print len(pinsRead)
-
-                    #save the pin-html
-                    pinStream = gzip.open(pathBoards+"/"+albumName+"/"+pin.split("/")[2],"w")
-                    pinStream.write(htmlPin)
-                    pinStream.close()
-                    #add the meta info telling when the content was created
-                    info.write(pin.split("/")[2] +";" + str(timeCreate) + ";" + str(datetime.now())+"\n")
+              info = open(pathBoards+"/"+albumName+"/timeline","a")
+              print nPinsOnBoard
 
 
+              #write metainfo of the board
+              saida = open(pathBoards+"/"+albumName+"/attributes","w")
+              header="title;category;nPins;nFollower;boardLink\n"
+              att=""+title+";"+ category+ ";"+nPinsOnBoard+";"+nFollowersBoard+";"+albumLink
+              saida.write(header+att)
+              saida.close()
+
+              #write the first page of the board
+              saida = gzip.open(pathBoards+"/"+albumName+"/firstPage","w")
+              saida.write(htmlBoard)
+              saida.close()
 
 
-              if (coleta != 0 ):
-                  if int(nPinsOnBoard) > len(pinsRead):
-                     remaning = int(nPinsOnBoard) - len(pinsRead)
-                     if (remaning >= 25 ):
-                         nRequest = len(pinsRead) + 25
-                     else:
-                         nRequest = len(pinsRead) + remaning
-                     #print "Pedindo mais " + str(nRequest)
-                     htmlBoard = self.pinterest.fetchPins("http://pinterest.com"+ albumLink, str(nRequest) )
-                  else:
-                      break
+              #crawl until find some content not generated today
+              while(coleta):
 
-          info.close()
+                  #mudou html denovo
+                  #pins = re.findall('<a href="(.*)" class="pinImageWrapper "',htmlBoard)
+                  pins = re.findall('<a href="(.*)" class="pinImageWrapper',htmlBoard)
+                  for pin in pins:
+
+                     if not (pin in pinsRead):
+                        htmlPin  = self.pinterest.fetchSimple("http://pinterest.com"+ pin)
+                        timeAgo = re.search('class="commentDescriptionTimeAgo">(.*)</span>',htmlPin)
+                        timeCreate= self.findTime(timeAgo.group(1))
+                        if ( timeCreate  == -1):
+                            coleta = 0
+                            break
+                        pinsRead.add(pin)
+                        print len(pinsRead)
+
+                        #save the pin-html
+                        pinStream = gzip.open(pathBoards+"/"+albumName+"/"+pin.split("/")[2],"w")
+                        pinStream.write(htmlPin)
+                        pinStream.close()
+                        #add the meta info telling when the content was created
+                        info.write(pin.split("/")[2] +";" + str(timeCreate) + ";" + str(datetime.now())+"\n")
+
+
+
+
+                  if (coleta != 0 ):
+                      if int(nPinsOnBoard) > len(pinsRead):
+                         remaning = int(nPinsOnBoard) - len(pinsRead)
+                         if (remaning >= 25 ):
+                             nRequest = len(pinsRead) + 25
+                         else:
+                             nRequest = len(pinsRead) + remaning
+                         #print "Pedindo mais " + str(nRequest)
+                         htmlBoard = self.pinterest.fetchPins("http://pinterest.com"+ albumLink, str(nRequest) )
+                      else:
+                          break
+
+              info.close()
 
 
 
