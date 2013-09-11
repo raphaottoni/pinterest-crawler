@@ -16,7 +16,6 @@ import pinterest
 #         return profileId
 
 #from googleplus import *
-
 # Get list of files to collect
 #files_all = set([a.rstrip() for a in open("%s/files_all.txt" % (LOGS_DIR))])
 #files_collected = set([a.rstrip().split(" ")[0] for a in open("%s/files_collected.txt" % (LOGS_DIR))])
@@ -54,6 +53,8 @@ while True:
             #profileId = "eatsleepwear"
             #profileId = "2minlaundry"
             #profileId = "1linds"
+            #profileId = "camicado"
+            #profileId = "raphaottoni"
             #print profileId
             client.send(json.dumps({"command": "GIVE_ID", "profileID": str(profileId)}))
             client_id = message["clientid"]
