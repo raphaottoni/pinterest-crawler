@@ -54,7 +54,7 @@ while True:
             #profileId = "2minlaundry"
             #profileId = "1linds"
             #profileId = "camicado"
-            profileId = "raphaottoni"
+            #profileId = "raphaottoni"
             #print profileId
             client.send(json.dumps({"command": "GIVE_ID", "profileID": str(profileId)}))
             client_id = message["clientid"]
