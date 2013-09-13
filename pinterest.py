@@ -75,7 +75,7 @@ class Pinterest:
           self.db.commit()
           return self.cursor.fetchone()[0]
   def getIDtoCrawl(self):
-          self.cursor.execute("select pinterestID from usersToCollect where statusColeta is null or statusColeta = 0 limit 1")
+          self.cursor.execute("select pinterestID from usersToCollect where statusColeta is null or statusColeta = 0 order by rand() limit 1")
           self.db.commit()
           return self.cursor.fetchone()[0]
 

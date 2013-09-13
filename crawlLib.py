@@ -39,7 +39,7 @@ class Crawler:
     path="profiles/"+pinterestID
     if not os.path.exists(path): os.makedirs(path)
     profile = gzip.open(path+"/profile","w")
-    html = self.pinterest.fetch("http://pinterest.com/"+ pinterestID + "/?d")
+    html = self.pinterest.fetch("http://www.pinterest.com/"+ pinterestID )
 
     print "voltou a resposta"
     if (html == 1):
@@ -78,12 +78,12 @@ class Crawler:
         owner = albumLink.split("/")[1]
         albumName = albumLink.split("/")[2]
         if not os.path.exists(pathBoards+"/"+albumName): os.makedirs(pathBoards+"/"+albumName)
-        print "http://pinterest.com"+ albumLink
+        print "http://www.pinterest.com"+ albumLink
 
         #check if it is a valid board name
         if (self.validBoardName(albumName)):
             #cralw the first pin page of the boad (25 items at most)
-            htmlBoard = self.pinterest.fetchPins("http://pinterest.com"+ albumLink, "0")
+            htmlBoard = self.pinterest.fetchPins("http://www.pinterest.com"+ albumLink, "0")
 
 
             # check if it is a shared board
@@ -121,7 +121,7 @@ class Crawler:
                   for pin in pins:
 
                      if not (pin in pinsRead):
-                        htmlPin  = self.pinterest.fetchSimple("http://pinterest.com"+ pin)
+                        htmlPin  = self.pinterest.fetchSimple("http://www.pinterest.com"+ pin)
                         timeAgo = re.search('class="commentDescriptionTimeAgo">(.*)</span>',htmlPin)
                         timeCreate= self.findTime(timeAgo.group(1))
                         if ( timeCreate  == -1):
@@ -148,7 +148,7 @@ class Crawler:
                          else:
                              nRequest = len(pinsRead) + remaning
                          print "Pedindo mais " + str(nRequest)
-                         htmlBoard = self.pinterest.fetchPins("http://pinterest.com"+ albumLink, str(nRequest) )
+                         htmlBoard = self.pinterest.fetchPins("http://www.pinterest.com"+ albumLink, str(nRequest) )
                       else:
                           break
 
