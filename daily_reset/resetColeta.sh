@@ -10,7 +10,7 @@ killall client.py
 killall server.py
 killall phantom.js
 mysql -u root -pOw,CEh24 pinterestTwitter < /data/$1/pinterest-crawler/daily_reset/reset.sql
-sleep 10
+sleep 2
 cd /data/$1/pinterest-crawler/
 nohup /data/$1/pinterest-crawler/server.py &
 sleep 2
