@@ -102,7 +102,7 @@ class Crawler:
               #write metainfo of the board
               saida = open(pathBoards+"/"+albumName+"/attributes","w")
               header="title;category;nPins;nFollower;boardLink\n"
-              att=""+title+";"+ category+ ";"+nPinsOnBoard+";"+nFollowersBoard+";"+albumLink
+              att=""+title.replace(";","")+";"+ category+ ";"+nPinsOnBoard+";"+nFollowersBoard+";"+albumLink
               saida.write(header+att)
               saida.close()
 
