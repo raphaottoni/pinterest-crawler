@@ -17,7 +17,7 @@ for arq in os.listdir("./profiles"):
 				for row in File:
 					total = row.count(";")
 					if (total > 4):
-						 row.replace(";","",(total - 4))
+						 row = row.replace(";","",(total - 4))
 					category = row.split(";")[1]
 					#category = row[1]
 				photos = open('./profiles/'+arq+'/boards/'+board+'/timeline',"r")
