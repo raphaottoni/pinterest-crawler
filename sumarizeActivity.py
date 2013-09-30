@@ -3,6 +3,7 @@ import os
 import re
 import csv
  
+
 saida = open("timelineUsersPinterest.txt","w")
 for arq in os.listdir("./profiles"):
 	try:
