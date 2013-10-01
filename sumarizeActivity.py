@@ -11,10 +11,15 @@ for arq in os.listdir("./profiles"):
 			
 			try:
 				File= open("./profiles/"+arq+"/boards/"+board+ "/attributes", "r")
-				csvFile = csv.reader(File,delimiter=';')
-				csvFile.next()
-				for row in csvFile:
-					category = row[1]
+				#csvFile = csv.reader(File,delimiter=';')
+				#csvFile.next()
+				File.next()
+				for row in File:
+					total = row.count(";")
+					if (total > 4):
+						 row.replace(";","",(total - 4))
+					category = row.split(";")[1]
+					#category = row[1]
 				photos = open('./profiles/'+arq+'/boards/'+board+'/timeline',"r")
 				csvPhotos = csv.reader(photos,delimiter=";")
 				for photo in csvPhotos:
