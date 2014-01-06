@@ -25,7 +25,7 @@ for arq in os.listdir("./profiles"):
 				for photo in csvPhotos:
 					
 					pinPage = gzip.open('./profiles/'+arq+'/boards/'+board+'/'+photo[0],"r").read()
-					desc = re.findall('<meta property="og:description" name="og:description" content="(.*)" data-app="">', pinPage)[0].encode("utf-8").strip()
+					desc = re.findall('<meta property="og:description" name="og:description" content="(.*)" data-app="">', pinPage)[0].strip()
 					repin = re.findall('<h3 class="title">Repinned from</h3>',pinPage)
 					likes = re.findall('<meta property="pinterestapp:likes" name="pinterestapp:likes" content="(.*)" data-app="">',pinPage)[0].strip()
 					repins = re.findall('<meta property="pinterestapp:repins" name="pinterestapp:repins" content="(.*)" data-app="">',pinPage)[0].strip()
